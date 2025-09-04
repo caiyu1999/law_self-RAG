@@ -3,6 +3,7 @@ from typing import List, Dict
 from pathlib import Path
 from config import Config
 import chromadb 
+import streamlit as st 
 from llama_index.core.schema import TextNode
 from llama_index.core import VectorStoreIndex, StorageContext, Settings
 from llama_index.core.schema import TextNode
@@ -14,7 +15,7 @@ from llama_index.llms.ollama import Ollama
 from llama_index.core.postprocessor import SentenceTransformerRerank
 from langchain.chat_models import init_chat_model
 
-
+@st.cache_resource(show_spinner="初始化模型中...")
 def init_models(config: Config):
     """初始化模型并验证"""
     # Embedding模型
@@ -40,7 +41,7 @@ def init_models(config: Config):
     return embed_model, llm, reranker
 
 
-
+@st.cache_resource(show_spinner="加载知识库中...")
 def load_and_validate_json_files(data_dir: str) -> List[Dict]:
     """加载并验证JSON法律文件"""
     json_files = list(Path(data_dir).glob("*.json"))
@@ -70,7 +71,7 @@ def load_and_validate_json_files(data_dir: str) -> List[Dict]:
     print(f"成功加载 {len(all_data)} 个法律文件条目")
     return all_data
 
-
+@st.cache_resource(show_spinner="创建节点中...")
 def create_nodes(raw_data: List[Dict]) -> List[TextNode]:
     nodes = []
     for entry in raw_data:
@@ -102,7 +103,7 @@ def create_nodes(raw_data: List[Dict]) -> List[TextNode]:
 
 
 
-
+@st.cache_resource(show_spinner="初始化向量数据库...")
 def init_vector_store(config:Config,nodes: List[TextNode]) -> VectorStoreIndex:
     chroma_client = chromadb.PersistentClient(path=config.VECTOR_DB_DIR)
     
@@ -161,7 +162,7 @@ def init_vector_store(config:Config,nodes: List[TextNode]) -> VectorStoreIndex:
 
 
 
-
+@st.cache_resource(show_spinner="预备中...")
 def get_index(config:Config) ->any:
     data_dir = config.DATA_DIR  
     embed_model, llm, reranker = init_models(config)

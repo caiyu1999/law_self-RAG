@@ -5,8 +5,8 @@ from typing import Optional
 @dataclass 
 class Config:
     '''配置类'''
-    BASE_URL:str = ""
-    API_KEY:str = ""
+    BASE_URL:str = "https://api.chatanywhere.tech/v1"
+    API_KEY:str = "sk-Maf9m5KxsypZQ76kF2qQ6lsqLs3PL0cm2Bs3XeOD1yl6Lk86"
     
     EMBED_MODEL_PATH:str = "/home/tianfang/Agent/self-RAG/models/sungw111/text2vec-base-chinese-sentence"
     RERANK_MODEL_PATH:str = "/home/tianfang/Agent/self-RAG/models/BAAI/bge-reranker-large"
